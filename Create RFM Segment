@@ -1,0 +1,24 @@
+SELECT 
+    customer_id,
+    Recency,
+    Frequency,
+    Monetary,
+    R_Score,
+    F_Score,
+    M_Score,
+    CONCAT(R_Score, F_Score, M_Score) AS RFM_Segment,
+    CASE
+        WHEN CONCAT(R_Score, F_Score, M_Score) IN ('555', '545', '455', '554') THEN 'Champions'
+        WHEN CONCAT(R_Score, F_Score, M_Score) IN ('544', '454', '445', '535', '355') THEN 'Loyal Customers'
+        WHEN CONCAT(R_Score, F_Score, M_Score) IN ('551', '515', '155', '541', '145') THEN 'New/High-Value but Infrequent'
+        WHEN CONCAT(R_Score, F_Score, M_Score) LIKE '5%' AND F_Score < 3 THEN 'New Customers (Potential)'
+        WHEN CONCAT(R_Score, F_Score, M_Score) LIKE '_5_' OR CONCAT(R_Score, F_Score, M_Score) LIKE '__5' THEN 'High-Value/Frequent (Needs Recency)'
+        WHEN CONCAT(R_Score, F_Score, M_Score) IN ('333', '323', '233') THEN 'At Risk'
+        WHEN CONCAT(R_Score, F_Score, M_Score) IN ('111', '112', '121', '211', '122', '212', '221') THEN 'Lost Customers'
+        ELSE 'Other'
+    END AS Customer_Segment
+FROM RFM_Scores
+ORDER BY customer_id;
+
+DROP TEMPORARY TABLE RFM;
+DROP TEMPORARY TABLE RFM_Scores;
