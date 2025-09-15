@@ -1,0 +1,12 @@
+SET @snapshot_date = '2025-06-14';
+
+CREATE TEMPORARY TABLE RFM AS
+SELECT 
+    customer_id,
+    DATEDIFF(@snapshot_date, MAX(order_date)) AS Recency,
+    COUNT(DISTINCT order_id) AS Frequency,
+    SUM(order_amount) AS Monetary
+FROM customer_orders
+GROUP BY customer_id;
+
+SELECT * FROM RFM;
